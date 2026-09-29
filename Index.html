@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVT 3AC - Variables expérimentales</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #eef8f2, #eef7fb);
+  color: #173b43;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 18px;
+}
+
+.header {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  margin-bottom: 18px;
+}
+
+.header h1 {
+  margin: 0;
+  color: #087a58;
+  font-size: 25px;
+}
+
+.header h2 {
+  margin: 8px 0;
+  font-size: 19px;
+  color: #15516b;
+}
+
+.header p {
+  margin: 5px 0;
+  color: #64777c;
+}
+
+.experience {
+  background: white;
+  border-left: 6px solid #087a58;
+  border-radius: 15px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.06);
+  line-height: 1.6;
+}
+
+.score {
+  text-align: center;
+  background: #dff3eb;
+  border-radius: 14px;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.progress {
+  height: 10px;
+  background: #dce8e5;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #087a58;
+  transition: .3s;
+}
+
+.instruction {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.card {
+  background: white;
+  border: 2px solid #d7e4e0;
+  border-radius: 13px;
+  padding: 14px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: .2s;
+}
+
+.card:hover {
+  border-color: #087a58;
+}
+
+.card.selected {
+  background: #dff3eb;
+  border-color: #087a58;
+}
+
+.categories {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.category {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.06);
+}
+
+.category h3 {
+  margin-top: 0;
+}
+
+.independent {
+  border-top: 5px solid #168a61;
+}
+
+.dependent {
+  border-top: 5px solid #287aa6;
+}
+
+.controlled {
+  border-top: 5px solid #d48632;
+}
+
+.category button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #d5e0dd;
+  background: #f8fbfa;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.category button:hover {
+  background: #eaf5f1;
+}
+
+.feedback {
+  text-align: center;
+  font-size: 17px;
+  font-weight: bold;
+  margin: 18px 0;
+  min-height: 25px;
+}
+
+.correct {
+  color: #087a58;
+}
+
+.incorrect {
+  color: #b35422;
+}
+
+.restart {
+  display: block;
+  margin: 15px auto;
+  padding: 13px 25px;
+  border: none;
+  border-radius: 12px;
+  background: #087a58;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #6b7c80;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>Prof Hanane IZAHRAOUI</h1>
+    <h2>Sciences de la Vie et de la Terre</h2>
+    <p>Activité interactive — Niveau 3AC</p>
+  </div>
+
+  <div class="score">
+    🏆 Score : <span id="score">0</span> / 8
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+  </div>
+
+  <div class="experience">
+    <strong>🔬 Situation expérimentale</strong>
+    <p>
+      On cherche à étudier l'effet de la
+      <strong>quantité de lumière</strong> sur la croissance d'une plante.
+    </p>
+
+    <p>
+      On utilise des plantes de la même espèce, de même âge,
+      placées dans le même type de sol et recevant la même quantité d'eau.
+      Après deux semaines, on mesure leur hauteur.
+    </p>
+  </div>
+
+  <p class="instruction">
+    👆 Sélectionne un élément puis choisis sa catégorie.
+  </p>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="categories">
+
+    <div class="category independent">
+      <h3>🟢 Variable indépendante</h3>
+      <p>
+        Ce que le chercheur fait varier volontairement.
+      </p>
+      <div id="independent"></div>
+    </div>
+
+    <div class="category dependent">
+      <h3>🔵 Variable dépendante</h3>
+      <p>
+        Ce que l'on observe ou mesure comme résultat.
+      </p>
+      <div id="dependent"></div>
+    </div>
+
+    <div class="category controlled">
+      <h3>🟠 Variables contrôlées</h3>
+      <p>
+        Ce que l'on garde constant pendant l'expérience.
+      </p>
+      <div id="controlled"></div>
+    </div>
+
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <button class="restart" onclick="restartGame()">
+    🔄 Recommencer l'activité
+  </button>
+
+  <div class="footer">
+    © Prof Hanane IZAHRAOUI — SVT
+  </div>
+
+</div>
+
+<script>
+
+const elements = [
+
+  {
+    text: "Quantité de lumière",
+    answer: "independent"
+  },
+
+  {
+    text: "Hauteur de la plante après deux semaines",
+    answer: "dependent"
+  },
+
+  {
+    text: "Espèce de plante",
+    answer: "controlled"
+  },
+
+  {
+    text: "Âge initial des plantes",
+    answer: "controlled"
+  },
+
+  {
+    text: "Type de sol",
+    answer: "controlled"
+  },
+
+  {
+    text: "Quantité d'eau reçue",
+    answer: "controlled"
+  },
+
+  {
+    text: "Température du milieu",
+    answer: "controlled"
+  },
+
+  {
+    text: "Durée de l'expérience",
+    answer: "controlled"
+  }
+
+];
+
+let selected = null;
+let score = 0;
+let completed = 0;
+
+function createCards() {
+
+  const cards = document.getElementById("cards");
+
+  cards.innerHTML = "";
+
+  elements.forEach((element, index) => {
+
+    const card = document.createElement("div");
+
+    card.className = "card";
+
+    card.textContent = element.text;
+
+    card.onclick = function() {
+
+      if (card.classList.contains("done")) return;
+
+      document.querySelectorAll(".card")
+        .forEach(c => c.classList.remove("selected"));
+
+      card.classList.add("selected");
+
+      selected = {
+        index: index,
+        card: card
+      };
+
+      showChoices();
+
+    };
+
+    cards.appendChild(card);
+
+  });
+
+}
+
+function showChoices() {
+
+  const feedback = document.getElementById("feedback");
+
+  feedback.innerHTML = `
+    <div style="font-size:15px;margin-bottom:10px;">
+      Choisis la bonne catégorie :
+    </div>
+
+    <button onclick="checkAnswer('independent')">
+      🟢 Variable indépendante
+    </button>
+
+    <button onclick="checkAnswer('dependent')">
+      🔵 Variable dépendante
+    </button>
+
+    <button onclick="checkAnswer('controlled')">
+      🟠 Variable contrôlée
+    </button>
+  `;
+
+  feedback.className = "feedback";
+
+}
+
+function checkAnswer(category) {
+
+  if (selected === null) return;
+
+  const element = elements[selected.index];
+
+  if (category === element.answer) {
+
+    score++;
+    completed++;
+
+    selected.card.classList.remove("selected");
+
+    selected.card.classList.add("done");
+
+    selected.card.style.opacity = "0.5";
+    selected.card.style.cursor = "default";
+
+    const target =
+      document.getElementById(category);
+
+    const answer = document.createElement("button");
+
+    answer.textContent = "✓ " + element.text;
+
+    answer.disabled = true;
+
+    target.appendChild(answer);
+
+    document.getElementById("feedback").innerHTML =
+      "✅ Correct ! Très bien !";
+
+    document.getElementById("feedback").className =
+      "feedback correct";
+
+  } else {
+
+    document.getElementById("feedback").innerHTML =
+      "❌ Ce n'est pas la bonne catégorie. Relis la définition et réessaie.";
+
+    document.getElementById("feedback").className =
+      "feedback incorrect";
+
+  }
+
+  document.getElementById("score").textContent = score;
+
+  document.getElementById("progress").style.width =
+    (completed / elements.length * 100) + "%";
+
+  selected = null;
+
+  if (completed === elements.length) {
+
+    document.getElementById("feedback").innerHTML =
+      "🎉 Bravo ! Tu as terminé toute l'activité !";
+
+    document.getElementById("feedback").className =
+      "feedback correct";
+
+  }
+
+}
+
+function restartGame() {
+
+  score = 0;
+  completed = 0;
+  selected = null;
+
+  document.getElementById("score").textContent = "0";
+
+  document.getElementById("progress").style.width = "0%";
+
+  document.getElementById("feedback").innerHTML = "";
+
+  document.getElementById("independent").innerHTML = "";
+
+  document.getElementById("dependent").innerHTML = "";
+
+  document.getElementById("controlled").innerHTML = "";
+
+  createCards();
+
+}
+
+createCards();
+
+</script>
+
+</body>
+</html>
